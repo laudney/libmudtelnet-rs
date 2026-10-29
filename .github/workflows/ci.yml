@@ -17,6 +17,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
+          targets: riscv32imac-unknown-none-elf
 
       - name: Format
         run: cargo fmt --all -- --check
@@ -27,5 +28,7 @@ jobs:
       - name: Test (all features)
         run: cargo test --workspace --all-features
 
+      # Checked for a target without `std`: on the host a dependency that
+      # pulls `std` back in would go unnoticed.
       - name: no_std check
-        run: cargo check --quiet --no-default-features
+        run: cargo check --quiet --no-default-features --target riscv32imac-unknown-none-elf

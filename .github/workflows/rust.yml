@@ -61,6 +61,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install stable rust toolchain
       uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: riscv32imac-unknown-none-elf
     - name: Build (default features)
       run: cargo build --locked --verbose
     - name: Run tests (default features)
@@ -69,6 +71,10 @@ jobs:
       run: cargo build --locked --verbose --no-default-features
     - name: Run tests (no default features)
       run: cargo test --locked --verbose --no-default-features
+    # The host has `std`, so only a target without it catches dependencies
+    # that pull `std` back in.
+    - name: Build for a no_std target
+      run: cargo build --locked --verbose --no-default-features --target riscv32imac-unknown-none-elf
 
   nightly:
     name: Nightly Rust
